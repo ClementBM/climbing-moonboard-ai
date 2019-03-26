@@ -4,4 +4,4 @@ This is an experiment to predict Moonboard problem grade with LSTM Recurrent Neu
 
 ![Moonboard Photo](Image/moonboard.jpg)
 
-Data comes from https://www.moonboard.com/
+The data comes from https://www.moonboard.com/
