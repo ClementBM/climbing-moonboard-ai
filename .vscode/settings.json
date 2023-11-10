@@ -1,0 +1,27 @@
+{
+    "python.pythonPath": "${env:PYTHON_VENV_LOC}",
+    "python.testing.unittestEnabled": false,
+    "python.testing.nosetestsEnabled": false,
+    "python.testing.pytestEnabled": true,
+    "python.testing.pytestArgs": [
+        "tests"
+    ],
+    "editor.tabSize": 4,
+    "[python]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "ms-python.black-formatter"
+    },
+    "files.exclude": {
+        ".mypy_cache": true,
+        ".pytest_cache": true,
+        ".venv": true,
+        "**/__pycache__": true
+    },
+    "files.watcherExclude": {
+        ".venv/**": true,
+        "**/__pycache__/**": true,
+        ".mypy_cache/**": true,
+        ".pytest_cache/**": true
+    },
+    
+}

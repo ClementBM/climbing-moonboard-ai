@@ -1,0 +1,40 @@
+# https://python-poetry.org/docs/pyproject/
+[tool.poetry]
+name = "climbing_ai"
+version = "0.1.0"
+description = "Climbin Moonboard AI"
+authors = ["Clément Brutti-Mairesse <clement.brutti.mairesse@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/ClementBM/climbing-ai"
+repository = "https://github.com/ClementBM/climbing-ai"
+keywords = ["ai", "moonboard", "climbing", "transformers"]
+include = [
+    "LICENSE",
+]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.13"
+torch = "=2.0.0"
+scikit-learn = "^1.3.2"
+pandas = "^2.1.2"
+numpy = "^1.26.1"
+matplotlib = "^3.8.1"
+tqdm = "^4.66.1"
+einops = "^0.7.0"
+
+[tool.poetry.dev-dependencies]
+pylint = "*"
+pytest = "*"
+mypy = "*"
+jupyter = "*"
+notebook = "*"
+ipykernel = "*"
+black = "*"
+sphinx = "*"
+sphinx-rtd-theme = "*"
+coverage = "*"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
