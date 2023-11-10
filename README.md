@@ -2,6 +2,6 @@
 
 This is an experiment to predict Moonboard problem grade with LSTM Recurrent Neural Network.
 
-![Moonboard Photo](Image/moonboard.jpg)
+![Moonboard Photo](artifacts/images/moonboard.jpg)
 
 The data comes from https://www.moonboard.com/
