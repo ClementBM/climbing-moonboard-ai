@@ -147,9 +147,48 @@ class MultiHeadAttention(nn.Module):
         self.heads = nn.ModuleList(
             [Head(head_size, embed_dim, x_max, y_max) for _ in range(num_heads)]
         )
+        self.projection = nn.Linear(
+            embed_dim, embed_dim
+        )  # projection for residual connection
 
     def forward(self, x, attn_mask, positions):
-        return torch.cat([h(x, attn_mask, positions) for h in self.heads], dim=-1)
+        out = torch.cat([h(x, attn_mask, positions) for h in self.heads], dim=-1)
+        out = self.projection(out)
+        return out
+
+
+class FeedForward(nn.Module):
+    def __init__(self, embed_dim):
+        super().__init__()
+
+        self.net = nn.Sequential(
+            nn.Linear(embed_dim, 4 * embed_dim),
+            nn.ReLU(),
+            nn.Linear(4 * embed_dim, embed_dim),  # projection for residual connection
+        )
+
+    def forward(self, x):
+        return self.net(x)
+
+
+class TransformerBlock(nn.Module):
+    def __init__(self, embed_dim, head_size, num_heads, x_max, y_max) -> None:
+        super().__init__()
+
+        self.multihead_attention = MultiHeadAttention(
+            num_heads, head_size, embed_dim, x_max, y_max
+        )
+        self.ffwd = FeedForward(embed_dim)
+        self.layer_norm_1 = nn.LayerNorm(embed_dim)
+        self.layer_norm_2 = nn.LayerNorm(embed_dim)
+
+    def forward(self, x, attn_mask, positions):
+        out = self.layer_norm_1(x)
+        out = out + self.multihead_attention(out, attn_mask, positions)
+
+        out = self.layer_norm_2(out)
+        out = out + self.ffwd(out)
+        return out
 
 
 class WolfBERT(nn.Module):
@@ -162,15 +201,24 @@ class WolfBERT(nn.Module):
 
         head_size = embed_dim // num_heads
 
-        self.multi_head = MultiHeadAttention(
-            num_heads, head_size, embed_dim, x_max, y_max
-        )
         self.lm_head = nn.Linear(head_size * num_heads, vocab_size)
         self.sentence_classifier = nn.Linear(head_size * num_heads, classifier_count)
 
+        self.transformer_block = TransformerBlock(
+            embed_dim=embed_dim,
+            head_size=head_size,
+            num_heads=num_heads,
+            x_max=x_max,
+            y_max=y_max,
+        )
+        self.layer_norm = nn.LayerNorm(embed_dim)
+
     def forward(self, sequence, attn_mask, masked_pos, positions):
         x = self.embedding(sequence)  # B, T, embedding_size
-        x = self.multi_head(x, attn_mask, positions)  # B, T, head_size * num_heads
+
+        x = self.transformer_block(
+            x, attn_mask, positions
+        )  # B, T, head_size * num_heads
 
         # masked token prediction
         masked_pos = masked_pos[:, :, None].expand(-1, -1, x.size(-1))
