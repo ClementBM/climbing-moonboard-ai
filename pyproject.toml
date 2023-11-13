@@ -22,6 +22,7 @@ numpy = "^1.26.1"
 matplotlib = "^3.8.1"
 tqdm = "^4.66.1"
 einops = "^0.7.0"
+seaborn = "^0.13.0"
 
 [tool.poetry.dev-dependencies]
 pylint = "*"

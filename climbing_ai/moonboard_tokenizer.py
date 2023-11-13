@@ -180,3 +180,6 @@ class MoonboardTokenizer:
     ):
         self._enable_padding = True
         self.max_len = length
+
+    def id_to_holdname(self, x, y):
+        return self.alpha_indices[x] + str(self.number_indices[y])
